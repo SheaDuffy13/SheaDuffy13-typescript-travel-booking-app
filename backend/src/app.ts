@@ -25,9 +25,9 @@ mongoose.connect(DB_URI)
 app.use(express.json()); // for parsing application/json
 app.use(cors(corsOptions))
 
-app.get("/api", (req: Request, res: Response) => {
-    res.send({ message: "Hello from Express!" });
-});
+// app.get("/api", (req: Request, res: Response) => {
+//     res.send({ message: "Hello from Express!" });
+// });
 
 app.use('/api/user', userRoutes);
 app.use('/api/hotels', hotelRoutes);
