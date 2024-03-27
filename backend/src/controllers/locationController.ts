@@ -73,3 +73,15 @@ export const deleteLocationById = async (req: Request, res: Response) => {
     res.status(500).send(error);
   }
 };
+
+// Search locations
+export const searchLocations = async (req: Request, res: Response) => {
+    const searchTerm = req.query.term as string;
+    try {
+      const locations = await Location.find({ name: new RegExp('^' + searchTerm, 'i') });
+      res.send(locations);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  };
+  
