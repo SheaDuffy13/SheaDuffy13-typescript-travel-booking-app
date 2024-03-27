@@ -1,11 +1,14 @@
-// const express = require('express');
-// const flightRouter = express.Router();
-// const flightController = require('../controllers/flightController');
+import express from 'express';
+import * as flightController from '../controllers/flightController';
 
-// flightRouter.get('/', flightController.getAllFlights);
-// flightRouter.post('/', flightController.createFlight);
-// flightRouter.get('/:id', flightController.getFlightById);
-// flightRouter.put('/:id', flightController.updateFlight);
-// flightRouter.delete('/:id', flightController.deleteFlight);
+const router = express.Router();
 
-// module.exports = flightRouter;
+router.post('/', flightController.createFlight);
+router.get('/', flightController.getAllFlights);
+router.get('/:id', flightController.getFlightById);
+router.put('/:id', flightController.updateFlightById);
+router.delete('/:id', flightController.deleteFlightById);
+router.get('/search', flightController.searchFlights);
+
+
+export default router;

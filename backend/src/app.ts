@@ -3,7 +3,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes';
 import hotelRoutes from './routes/hotelRoutes';
-// import flightRoutes from './routes/flightRoutes';
+import flightRoutes from './routes/flightRoutes';
+import locationRoutes from './routes/locationRoutes';
 // import bookingRoutes from './routes/bookingRoutes';
 import dotenv from 'dotenv';
 
@@ -31,7 +32,8 @@ app.use(cors(corsOptions))
 
 app.use('/api/user', userRoutes);
 app.use('/api/hotels', hotelRoutes);
-// app.use('/api/flights', flightRoutes);
+app.use('/api/flights', flightRoutes);
+app.use('/api/locations', locationRoutes);
 // app.use('/api/bookings', bookingRoutes);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

@@ -16,7 +16,7 @@
     },
     "include": [
       "src/**/*.ts"
-    ],
+, "importLocations.ts"    ],
     "exclude": [
       "node_modules"
     ]
