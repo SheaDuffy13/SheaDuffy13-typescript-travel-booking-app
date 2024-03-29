@@ -7,6 +7,7 @@ import { addDays } from 'date-fns';
 import { Autocomplete } from '@mui/material';
 import axios from 'axios';
 import api from '../api/api';
+import TravellerSelection from './TravellerSelection'
 
 const SearchBar: React.FC = () => {
   const [departureDate, setDepartureDate] = useState<Date | null>(null);
@@ -86,10 +87,11 @@ const SearchBar: React.FC = () => {
 </Grid>
 
         <Grid item xs={12} sm={3}>
-          <Select variant="outlined" fullWidth defaultValue={1}>
+          <TravellerSelection />
+          {/* <Select variant="outlined" fullWidth defaultValue={1}>
             <MenuItem value={1}>1 Adult</MenuItem>
             <MenuItem value={2}>2 Adults</MenuItem>
-          </Select>
+          </Select> */}
         </Grid>
       </Grid>
     </Box>
