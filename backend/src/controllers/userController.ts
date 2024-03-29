@@ -1,18 +1,25 @@
-import User from '../models/User';
-// import bcrypt from 'bcryptjs';
-// import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
+import { User } from '../models/User';
+
+
+// Middleware for error handling
+export const handleError = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ message: err.message });
+};
 
 // Sign up a new user
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
-
-    // Validate request body
-    if (!(email && password && firstName && lastName)) {
-      res.status(400).send("All input is required");
-      return;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
+    const { firstName, lastName, email, password } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -21,41 +28,44 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     // Hash password
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user
-    const user = await User.create({
+    const user = new User({
       firstName,
       lastName,
       email,
-    //   password: hashedPassword
-    password
+      password: hashedPassword
     });
 
-    // // Generate token
-    // const token = jwt.sign(
-    //   { userId: user._id },
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: '2h' }
-    // );
+    const savedUser = await user.save();
 
-    // res.status(201).json({ token, userId: user._id });
-    res.status(201).json({ userName: user.firstName + ' ' + user.lastName, userId: user._id });
+    // Generate token
+    const token = jwt.sign(
+      { userId: savedUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.status(201).json({ token, userId: savedUser._id, redirectTo: '/profile' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
 
 // Log in an existing user
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password } = req.body;
+    // Validate and sanitize input
+    body('email').isEmail().normalizeEmail();
+    body('password').isLength({ min: 5 });
 
-    // Validate request body
-    if (!(email && password)) {
-      res.status(400).send("All input is required");
-      return;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
+
+    const { email, password } = req.body;
 
     // Check if user exists
     const user = await User.findOne({ email });
@@ -64,24 +74,22 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Check password
-    // if (await bcrypt.compare(password, user.password)) {
-        if (password === user.password) {
-      // Generate token
-    //   const token = jwt.sign(
-    //     { userId: user._id },
-    //     process.env.JWT_SECRET,
-    //     { expiresIn: '2h' }
-    //   );
+    if (await bcrypt.compare(password, user.password)) {
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '2h' }
+      );
 
-      // res.status(200).json({ token, userId: user._id });
-      res.status(200).json({ userId: user._id });
+      res.status(200).json({ token, userId: user._id, redirectTo: '/profile' });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 };
+
 
 // Delete user by ID
 export const deleteProfile = async (req: Request, res: Response) => {
@@ -132,3 +140,16 @@ export const updateProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+// GET all user flight bookings
+export const getBookings = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id).populate('bookings');
+    if (!user) {
+      return res.status(404).json({ message: 'Cannot find user' });
+    }
+    res.json(user.bookings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -4,6 +4,8 @@ import { Routes, Route} from 'react-router-dom'
 import HomePage from './pages/HomePage';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import SignInSignUpPage from './pages/SignInSignUpPage';
+import ProfilePage from "./pages/ProfilePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 const theme = createTheme();
@@ -14,9 +16,11 @@ const App: React.FC = () => {
       <Header />
       <div className="App">
         <main>
-          <Routes>
-            <Route path='/' element={<HomePage />} />
-          </Routes>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/signup' element={<SignInSignUpPage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+        </Routes>
         </main>
       </div>
       <Footer />

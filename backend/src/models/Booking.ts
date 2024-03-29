@@ -1,27 +1,22 @@
-// const mongoose = require('mongoose');
-// const { Schema } = mongoose;
+import mongoose, { Document, Schema } from 'mongoose';
 
-// // Define the Booking model
-// const bookingSchema = new Schema({
-//     userId: { 
-//       type: Schema.Types.ObjectId, 
-//       ref: 'User' // A reference to the User model
-//     }, 
-//     flightId: {
-//        type: Schema.Types.ObjectId, 
-//        ref: 'Flight' // A reference to the Flight model
-//     }, 
-//     hotelId: { 
-//       type: Schema.Types.ObjectId, 
-//       ref: 'Hotel' // A reference to the Hotel model
-//     }, 
-//     bookingDate: {
-//       type: Date,
-//       default: Date.now
-//     },
-//     totalPrice: Number,
-//   });
-//   const Booking = mongoose.model('Booking', bookingSchema);
-
-
-//   module.exports = Booking;
+interface IBooking extends Document {
+    user: Schema.Types.ObjectId;
+    flight: Schema.Types.ObjectId;
+    adults: number;
+    children: number;
+    cabinClass: string;
+    date: Date;
+  }
+  
+  const BookingSchema: Schema = new Schema({
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    flight: { type: Schema.Types.ObjectId, ref: 'Flight', required: true },
+    adults: { type: Number, required: true },
+    children: { type: Number, required: true },
+    cabinClass: { type: String, required: true },
+    date: { type: Date, default: Date.now }
+  });
+  
+  export const Booking = mongoose.model<IBooking>('Booking', BookingSchema);
+  

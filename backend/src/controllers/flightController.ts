@@ -1,4 +1,4 @@
-import Flight from '../models/Flight';
+import { Flight } from '../models/Flight';
 import { Request, Response } from 'express';
 
 export const createFlight = async (req: Request, res: Response) => {

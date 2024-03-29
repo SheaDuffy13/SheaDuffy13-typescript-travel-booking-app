@@ -1,4 +1,4 @@
-import Location from '../models/Location';
+import { Location } from '../models/Location';
 import { Request, Response } from 'express';
 
 // Get all locations

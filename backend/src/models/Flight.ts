@@ -1,14 +1,21 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-// Define the Flight model
-const flightSchema = new mongoose.Schema({
-  flyingFrom: { type: String, required: true },
-  destination: { type: String, required: true },
-  departureDate: { type: Date, required: true },
-  returnDate: { type: Date, required: true },
-  adults: { type: Number, required: true },
-  children: { type: Number, default: 0 },
-  cabinClass: { type: String, required: true },
+interface IFlight extends Document {
+  flightNumber: string;
+  departure: Schema.Types.ObjectId;
+  destination: Schema.Types.ObjectId;
+  date: Date;
+  seats: number;
+  price: number;
+}
+
+const FlightSchema: Schema = new Schema({
+  flightNumber: { type: String, required: true, unique: true },
+  departure: { type: Schema.Types.ObjectId, ref: 'Location', required: true },
+  destination: { type: Schema.Types.ObjectId, ref: 'Location', required: true },
+  date: { type: Date, required: true },
+  seats: { type: Number, required: true },
+  price: { type: Number, required: true }
 });
 
-export default mongoose.model('Flight', flightSchema);
+export const Flight = mongoose.model<IFlight>('Flight', FlightSchema);

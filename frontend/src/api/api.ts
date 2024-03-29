@@ -8,12 +8,12 @@ const api: AxiosInstance = axios.create({
 });
 
 // include JWT in the Authorization header of every request that requires authentication
-// api.interceptors.request.use((config) => {
-//   const token: string | null = localStorage.getItem('token');
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
+api.interceptors.request.use((config) => {
+  const token: string | null = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default api;
