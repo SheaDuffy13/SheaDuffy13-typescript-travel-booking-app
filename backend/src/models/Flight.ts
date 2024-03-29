@@ -7,6 +7,12 @@ interface IFlight extends Document {
   date: Date;
   seats: number;
   price: number;
+  availableSeats: number;
+  bookingCount: number;
+  duration: number;
+  status: 'active' | 'canceled' | 'delayed';
+  passengers: Schema.Types.ObjectId[];
+  [key: string]: any;
 }
 
 const FlightSchema: Schema = new Schema({
@@ -15,7 +21,12 @@ const FlightSchema: Schema = new Schema({
   destination: { type: Schema.Types.ObjectId, ref: 'Location', required: true },
   date: { type: Date, required: true },
   seats: { type: Number, required: true },
-  price: { type: Number, required: true }
+  bookingCount: { type: Number, default: 0 },
+  availableSeats: { type: Number, default: function() { return this.seats; } },
+  duration: { type: Number, required: true },
+  price: { type: Number, required: true },
+  status: { type: String, enum: ['active', 'canceled', 'delayed'], default: 'active' },
+  passengers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 export const Flight = mongoose.model<IFlight>('Flight', FlightSchema);

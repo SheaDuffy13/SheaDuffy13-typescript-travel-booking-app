@@ -6,10 +6,17 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  bookings: Booking[];
+}
+
+interface Booking {
+    _id: string;
+    flightNumber: string;
 }
 
 const ProfilePage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -53,7 +60,16 @@ const ProfilePage: React.FC = () => {
       <Typography variant="h4">Profile</Typography>
       <Typography variant="h6">{user.firstName} {user.lastName}</Typography>
       <Typography>{user.email}</Typography>
-      {/* Display user's bookings here */}
+      
+      <Typography variant="h6">Bookings</Typography>
+      {user.bookings.length > 0 ? (
+        user.bookings.map(booking => (
+          <Typography key={booking._id}>{booking.flightNumber}</Typography>
+        ))
+      ) : (
+        <Typography>No flights booked</Typography>
+      )}
+
       <Button variant="contained" color="secondary" onClick={handleSignOut} sx={{ mt: 2 }}>
         Sign Out
       </Button>

@@ -1,11 +1,11 @@
-// const express = require('express');
-// const bookingRouter = express.Router();
-// const bookingController = require('../controllers/bookingController');
+// bookingRoutes.ts
+import express from 'express';
 
-// bookingRouter.get('/', bookingController.getAllBookings);
-// bookingRouter.post('/', bookingController.createBooking);
-// bookingRouter.get('/:id', bookingController.getBookingById);
-// bookingRouter.put('/:id', bookingController.updateBooking);
-// bookingRouter.delete('/:id', bookingController.deleteBooking);
+import * as bookingController from '../controllers/bookingController';
 
-// module.exports = bookingRouter;
+const bookingRouter = express.Router();
+
+bookingRouter.post('/', bookingController.createBooking);
+bookingRouter.get('/:bookingId', bookingController.getBooking);
+
+export default bookingRouter;

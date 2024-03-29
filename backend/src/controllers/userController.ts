@@ -141,15 +141,15 @@ export const updateProfile = async (req: Request, res: Response) => {
   }
 }
 
-// GET all user flight bookings
-export const getBookings = async (req: Request, res: Response) => {
-  try {
-    const user = await User.findById(req.params.id).populate('bookings');
-    if (!user) {
-      return res.status(404).json({ message: 'Cannot find user' });
-    }
-    res.json(user.bookings);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+// // GET all user flight bookings
+// export const getBookings = async (req: Request, res: Response) => {
+//   try {
+//     const user = await User.findById(req.params.id).populate('bookings');
+//     if (!user) {
+//       return res.status(404).json({ message: 'Cannot find user' });
+//     }
+//     res.json(user.bookings);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };

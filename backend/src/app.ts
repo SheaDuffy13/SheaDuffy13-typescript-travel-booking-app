@@ -2,10 +2,10 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes';
-import hotelRoutes from './routes/hotelRoutes';
+import bookingRoutes from './routes/bookingRoutes';
+// import hotelRoutes from './routes/hotelRoutes';
 import flightRoutes from './routes/flightRoutes';
 import locationRoutes from './routes/locationRoutes';
-// import bookingRoutes from './routes/bookingRoutes';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -26,14 +26,10 @@ mongoose.connect(DB_URI)
 app.use(express.json()); // for parsing application/json
 app.use(cors(corsOptions))
 
-// app.get("/api", (req: Request, res: Response) => {
-//     res.send({ message: "Hello from Express!" });
-// });
-
 app.use('/api/user', userRoutes);
-app.use('/api/hotels', hotelRoutes);
+// app.use('/api/hotels', hotelRoutes);
+app.use('/api/booking', bookingRoutes);
 app.use('/api/flights', flightRoutes);
 app.use('/api/locations', locationRoutes);
-// app.use('/api/bookings', bookingRoutes);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

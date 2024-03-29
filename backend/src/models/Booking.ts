@@ -5,6 +5,7 @@ interface IBooking extends Document {
     flight: Schema.Types.ObjectId;
     adults: number;
     children: number;
+    totalPassengers: number;
     cabinClass: string;
     date: Date;
   }
@@ -14,9 +15,17 @@ interface IBooking extends Document {
     flight: { type: Schema.Types.ObjectId, ref: 'Flight', required: true },
     adults: { type: Number, required: true },
     children: { type: Number, required: true },
+    totalPassengers: { type: Number },
     cabinClass: { type: String, required: true },
-    date: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now },
   });
   
+  BookingSchema.pre<IBooking>('save', function(next) {
+    // Calculate totalPassengers
+    this.totalPassengers = this.adults + this.children;
+  
+    next();
+  });
+
   export const Booking = mongoose.model<IBooking>('Booking', BookingSchema);
   

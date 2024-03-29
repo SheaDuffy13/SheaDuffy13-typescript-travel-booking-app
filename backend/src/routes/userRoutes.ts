@@ -7,6 +7,7 @@ const userRouter = express.Router();
 userRouter.get('/', userController.getAllUsers);
 userRouter.get('/:id', userController.getUser);
 userRouter.put('/:id', userController.updateProfile);
+// userRouter.get('/:id/bookings', userController.getBookings)
 userRouter.post('/signup', 
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 3 }),
@@ -17,6 +18,5 @@ userRouter.post('/signup',
 
 userRouter.post('/login', userController.login);
 userRouter.delete('/:id', userController.deleteProfile);
-userRouter.get('/:id/bookings', userController.getBookings)
 
 export default userRouter;

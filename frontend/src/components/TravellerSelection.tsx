@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { TextField, Select, MenuItem, Button, Popover, Box, InputAdornment, IconButton, Divider, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const TravellerSelection: React.FC = () => {
+interface TravellerSelectionProps {
+  onSelectionChange: (adults: number, children: number, cabinClass: string) => void;
+}
+
+const TravellerSelection: React.FC<TravellerSelectionProps> = ({ onSelectionChange }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -22,6 +26,19 @@ const TravellerSelection: React.FC = () => {
     if (value === 0) {
       setChildren(0);
     }
+    onSelectionChange(value, children, cabinClass);
+  };
+
+  const handleChildrenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value);
+    setChildren(value);
+    onSelectionChange(adults, value, cabinClass);
+  };
+
+  const handleCabinClassChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const value = event.target.value as string;
+    setCabinClass(value);
+    onSelectionChange(adults, children, value);
   };
 
   const open = Boolean(anchorEl);
@@ -80,7 +97,7 @@ const TravellerSelection: React.FC = () => {
             fullWidth
           />
           </div>
-          <Box marginBottom="10px"> {/* Add some padding */}
+          <Box marginBottom="10px">
               <Typography variant="caption" color="textSecondary">Under 17 years</Typography>
             </Box>
           <Divider />
