@@ -1,10 +1,22 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Box, Button, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import headerIcon from '../headerIcon.png'
+import headerIcon from '../headerIcon.png';
+import { jwtDecode } from 'jwt-decode';
+
 
 const Header: React.FC = () => {
-  const isLoggedIn = Boolean(localStorage.getItem('token'));
+  const token = localStorage.getItem('token');
+  let isExpired = true;
+
+  // Check if the token is expired
+  if (token) {
+    const decodedToken: any = jwtDecode(token);
+    const expirationDate = decodedToken.exp * 1000; // Convert to milliseconds
+    isExpired = Date.now() > expirationDate;
+  }
+
+  const isLoggedIn = Boolean(token) && !isExpired;
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
@@ -19,9 +31,7 @@ const Header: React.FC = () => {
         <img src={headerIcon} alt="Logo" style={{height: '50px'}} />
       </IconButton>
         <Box sx={{ flexGrow: 1 }} />
-        <Typography variant="body1">
-          +1 (123) 456-7890
-        </Typography>
+        
         {isLoggedIn ? (
           <Button color="inherit" component={Link} to="/profile">
             Profile

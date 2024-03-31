@@ -10,7 +10,8 @@ const TravellerSelection: React.FC<TravellerSelectionProps> = ({ onSelectionChan
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const [cabinClass, setCabinClass] = useState('Economy');
+  const [cabinClass, setCabinClass] = useState('economy');
+  const [travellers, setTravellers] = useState('1');
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -35,11 +36,11 @@ const TravellerSelection: React.FC<TravellerSelectionProps> = ({ onSelectionChan
     onSelectionChange(adults, value, cabinClass);
   };
 
-  const handleCabinClassChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const value = event.target.value as string;
-    setCabinClass(value);
-    onSelectionChange(adults, children, value);
-  };
+  // const handleCabinClassChange = (event: SelectChangeEvent<string>) => {
+  //   const value = event.target.value as string;
+  //   setCabinClass(value);
+  //   onSelectionChange(adults, children, value);
+  // };  
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -93,7 +94,7 @@ const TravellerSelection: React.FC<TravellerSelectionProps> = ({ onSelectionChan
             type="number"
             InputProps={{ inputProps: { min: 0, max: adults > 0 ? 10 : 0 } }}
             value={children}
-            onChange={(event) => setChildren(parseInt(event.target.value))}
+            onChange={handleChildrenChange}
             fullWidth
           />
           </div>
@@ -103,14 +104,14 @@ const TravellerSelection: React.FC<TravellerSelectionProps> = ({ onSelectionChan
           <Divider />
           <h3>Cabin Class</h3>
           <Select
+            label="Cabin Class"
             value={cabinClass}
-            onChange={(event) => setCabinClass(event.target.value as string)}
-            style={{ marginBottom: '10px' }}
+            onChange={(event) => setCabinClass(event.target.value)}
           >
-            <MenuItem value={'Economy'}>Economy</MenuItem>
-            <MenuItem value={'Premium Economy'}>Premium Economy</MenuItem>
-            <MenuItem value={'Business'}>Business</MenuItem>
-            <MenuItem value={'First Class'}>First Class</MenuItem>
+            <MenuItem value="economy">Economy</MenuItem>
+            <MenuItem value="premiumEconomy">Premium Economy</MenuItem>
+            <MenuItem value="business">Business</MenuItem>
+            <MenuItem value="firstClass">First Class</MenuItem>
           </Select>
           <Divider />
           <Box display="flex" justifyContent="space-between" marginTop="10px">
