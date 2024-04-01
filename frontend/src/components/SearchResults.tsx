@@ -1,6 +1,6 @@
 import React from "react";
-import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 interface Flight {
     _id: string;
@@ -24,7 +24,6 @@ interface SearchResultsProps {
 
 const SearchResults: React.FC<SearchResultsProps> = ({ flights }) => {
     const navigate = useNavigate();
-    const user = useAuth(); //null??
 
     if (flights.length === 0) {
         return (
@@ -60,17 +59,23 @@ const SearchResults: React.FC<SearchResultsProps> = ({ flights }) => {
                         First Class Seats Available:{" "}
                         {flight.availableSeats.firstClass}
                     </p>
-                    <div
+
+                    <Button
+                        variant="contained"
+                        color="primary"
                         onClick={() => {
-                            if (user) {
+                            // Check if the user's token exists in local storage
+                            if (localStorage.getItem("token")) {
+                                // If the token exists, the user is logged in and can book a flight
                                 navigate(`/booking/${flight._id}`);
                             } else {
+                                // If the token doesn't exist, redirect the user to the login page
                                 navigate("/signup");
                             }
                         }}
                     >
                         Book this flight
-                    </div>
+                    </Button>
                 </div>
             ))}
         </div>

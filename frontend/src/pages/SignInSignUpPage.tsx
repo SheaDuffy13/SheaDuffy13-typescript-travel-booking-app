@@ -21,34 +21,49 @@ const SignInSignUpPage = () => {
     const toggleIsSignUp = () => setIsSignUp(!isSignUp);
 
     const handleSignUp = (event: React.FormEvent) => {
-        event.preventDefault();
-
-        api.post("/user/signup", { firstName, lastName, email, password })
-            .then((res) => {
-                console.log(res.data);
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userId", res.data.userId);
-                window.location.href = "/profile";
-            })
-            .catch((err) => {
-                console.error(err);
-                setError("An error occurred during sign up.");
-            });
-    };
-
-    const handleSignIn = (event: React.FormEvent) => {
-        event.preventDefault();
-        api.post("/user/login", { email, password })
-            .then((res) => {
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("userId", res.data.userId);
-                window.location.href = "/profile";
-            })
-            .catch((err) => {
-                console.error(err);
-                setError("Invalid email or password.");
-            });
-    };
+      event.preventDefault();
+  
+      api.post("/user/signup", { firstName, lastName, email, password })
+          .then((res) => {
+              console.log(res.data);
+              localStorage.setItem("token", res.data.token);
+              localStorage.setItem("userId", res.data.userId);
+              localStorage.setItem("firstName", firstName); // Store the user's first name
+              localStorage.setItem("lastName", lastName); // Store the user's last name
+              localStorage.setItem("email", email); // Store the user's email
+              window.location.href = "/profile";
+          })
+          .catch((err) => {
+              console.error(err);
+              setError("An error occurred during sign up.");
+          });
+  };
+  
+  const handleSignIn = (event: React.FormEvent) => {
+      event.preventDefault();
+      api.post("/user/login", { email, password })
+          .then((res) => {
+              localStorage.setItem("token", res.data.token);
+              localStorage.setItem("userId", res.data.userId);
+              // After successful login, make another request to get the user's details
+              api.get(`/user/${res.data.userId}`)
+                  .then((res) => {
+                      localStorage.setItem("firstName", res.data.firstName); // Store the user's first name
+                      localStorage.setItem("lastName", res.data.lastName); // Store the user's last name
+                      localStorage.setItem("email", res.data.email); // Store the user's email
+                  })
+                  .catch((err) => {
+                      console.error(err);
+                      setError("An error occurred during sign in.");
+                  });
+              window.location.href = "/profile";
+          })
+          .catch((err) => {
+              console.error(err);
+              setError("Invalid email or password.");
+          });
+  };
+  
 
     return (
         <Box
@@ -56,13 +71,14 @@ const SignInSignUpPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                pt: 10
             }}
         >
             <Typography variant="h4">
                 {isSignUp ? "Sign Up" : "Sign In"}
             </Typography>
             {error && <Typography color="error">{error}</Typography>}
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, pt: 2 }}>
                 {isSignUp && (
                     <>
                         <TextField

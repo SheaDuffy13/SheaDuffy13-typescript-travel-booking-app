@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 import { Booking } from "../models/Booking";
 import { Flight } from "../models/Flight";
 
+interface RequestWithUser extends Request {
+    userId?: string;
+}
+
 // Create a new booking
-export const createBooking = async (req: Request, res: Response) => {
+export const createBooking = async (req: RequestWithUser, res: Response) => {
     try {
         const flight = await Flight.findById(req.body.flight);
         if (!flight) {
@@ -25,7 +29,10 @@ export const createBooking = async (req: Request, res: Response) => {
                 .send({ error: "Not enough available seats on the flight" });
         }
 
-        const booking = new Booking(req.body);
+        const booking = new Booking({
+            ...req.body,
+            user: req.userId, // Add the user's ID to the booking
+        });
         const savedBooking = await booking.save();
 
         flight.availableSeats[

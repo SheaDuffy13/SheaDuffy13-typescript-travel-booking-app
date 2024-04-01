@@ -176,28 +176,37 @@ export const getUser = async (req: RequestWithUser, res: Response) => {
 
 // PUT update user
 export const updateProfile = async (req: RequestWithUser, res: Response) => {
-    try {
-        // Check if the user is trying to update their own profile or if they're an admin
-        if (req.params.id !== req.userId && req.role !== "admin") {
-            return res.status(403).json({ message: "Unauthorized" });
-        }
+  try {
+      // Check if the user is trying to update their own profile or if they're an admin
+      if (req.params.id !== req.userId && req.role !== "admin") {
+          return res.status(403).json({ message: "Unauthorized" });
+      }
 
-        const updatedUser = await User.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true }
-        );
-        if (!updatedUser) {
-            return res.status(404).json({ message: "Cannot find user" });
-        }
-        res.json(updatedUser);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
+      const { firstName, lastName, email, currentPassword, newPassword } = req.body;
 
-export const getMe = (req: RequestWithUser, res: Response) => {
-    const user = req.user;
+      const user = await User.findById(req.params.id);
+      if (!user) {
+          return res.status(404).json({ message: "Cannot find user" });
+      }
 
-    res.json(user);
+      if (currentPassword && newPassword) {
+          const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+          if (!passwordMatch) {
+              return res.status(401).json({ message: "Current password is incorrect" });
+          }
+
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+          user.password = hashedPassword;
+      }
+
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.email = email;
+
+      const updatedUser = await user.save();
+
+      res.json(updatedUser);
+  } catch (err) {
+      res.status(500).json({ message: err.message });
+  }
 };

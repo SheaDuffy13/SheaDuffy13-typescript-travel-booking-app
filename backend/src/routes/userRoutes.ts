@@ -22,7 +22,6 @@ userRouter.post(
     userController.signup
 );
 userRouter.post("/login", userController.login);
-userRouter.get("/me", authMiddleware, userController.getMe);
 userRouter.delete("/:id", authMiddleware, userController.deleteProfile);
 
 export default userRouter;
