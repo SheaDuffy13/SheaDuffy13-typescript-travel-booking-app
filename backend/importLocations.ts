@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import mongoose from 'mongoose';
-import Location from './src/models/Location';
+import { Location } from './src/models/Location';
 import dotenv from 'dotenv';
 
 

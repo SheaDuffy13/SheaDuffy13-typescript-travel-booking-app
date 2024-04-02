@@ -7,6 +7,7 @@ import { addDays } from "date-fns";
 import { Autocomplete } from "@mui/material";
 import api from "../api/api";
 import TravellerSelection from "./TravellerSelection";
+import { useDebounce } from '../hooks/useDebounce';
 
 interface IFlight {
     _id: string;
@@ -36,28 +37,29 @@ const SearchBar: React.FC<SearchBarProps> = ({ setFlights }) => {
     const [flyingFromResults, setFlyingFromResults] = useState<any[]>([]);
     const [destinationResults, setDestinationResults] = useState<any[]>([]);
     const [submitted, setSubmitted] = useState(false);
-
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const [cabinClass, setCabinClass] = useState("Economy");
+    const debouncedFlyingFrom = useDebounce(flyingFrom, 300);
+    const debouncedDestination = useDebounce(destination, 300);
 
     useEffect(() => {
-        if (flyingFrom) {
-            api.get(`/locations/search?term=${flyingFrom}`)
+        if (debouncedFlyingFrom) {
+            api.get(`/locations/search?term=${debouncedFlyingFrom}`)
                 .then((res) => setFlyingFromResults(res.data))
                 .catch((err) => {
                     console.error(err);
                 });
         }
-    }, [flyingFrom]);
+    }, [debouncedFlyingFrom]);
 
     useEffect(() => {
-        if (destination) {
-            api.get(`/locations/search?term=${destination}`)
+        if (debouncedDestination) {
+            api.get(`/locations/search?term=${debouncedDestination}`)
                 .then((res) => setDestinationResults(res.data))
                 .catch((err) => console.error(err));
         }
-    }, [destination]);
+    }, [debouncedDestination]);
 
     const handleSelectionChange = (
         adults: number,

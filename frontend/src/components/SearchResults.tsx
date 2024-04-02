@@ -1,6 +1,6 @@
 import React from "react";
+import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 
 interface Flight {
     _id: string;
@@ -35,50 +35,71 @@ const SearchResults: React.FC<SearchResultsProps> = ({ flights }) => {
     }
 
     return (
-        <div>
+        <Grid container spacing={2} style={{ margin: "1em" }}>
             {flights.map((flight) => (
-                <div key={flight._id}>
-                    <h2>Flight Number: {flight.flightNumber}</h2>
-                    <p>Departure: {flight.departure.name}</p>
-                    <p>Destination: {flight.destination.name}</p>
-                    <p>Price: ${flight.price.toFixed(2)}</p>
-                    <p>Duration: {flight.duration} hours</p>
-                    <p>Date: {new Date(flight.date).toLocaleString()}</p>
-                    <p>
-                        Economy Seats Available: {flight.availableSeats.economy}
-                    </p>
-                    <p>
-                        Premium Economy Seats Available:{" "}
-                        {flight.availableSeats.premiumEconomy}
-                    </p>
-                    <p>
-                        Business Seats Available:{" "}
-                        {flight.availableSeats.business}
-                    </p>
-                    <p>
-                        First Class Seats Available:{" "}
-                        {flight.availableSeats.firstClass}
-                    </p>
-
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            // Check if the user's token exists in local storage
-                            if (localStorage.getItem("token")) {
-                                // If the token exists, the user is logged in and can book a flight
-                                navigate(`/booking/${flight._id}`);
-                            } else {
-                                // If the token doesn't exist, redirect the user to the login page
-                                navigate("/signup");
-                            }
-                        }}
-                    >
-                        Book this flight
-                    </Button>
-                </div>
+                <Grid item xs={12} sm={6} md={4} lg={3} key={flight._id}>
+                    <Card sx={{ minWidth: 275, mb: 2 }}>
+                        <CardContent>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Typography variant="body2">
+                                        <strong>Flight Number:</strong>{" "}
+                                        {flight.flightNumber}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>Date:</strong>{" "}
+                                        {new Date(flight.date).toLocaleString()}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>Departure:</strong>{" "}
+                                        {flight.departure.name}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>Destination:</strong>{" "}
+                                        {flight.destination.name}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Typography variant="body2">
+                                        <strong>Economy Seats:</strong>{" "}
+                                        {flight.availableSeats.economy}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>Premium Economy Seats:</strong>{" "}
+                                        {flight.availableSeats.premiumEconomy}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>Business Seats:</strong>{" "}
+                                        {flight.availableSeats.business}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        <strong>First Class Seats:</strong>{" "}
+                                        {flight.availableSeats.firstClass}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    // Check if the user's token exists in local storage
+                                    if (localStorage.getItem("token")) {
+                                        // If the token exists, the user is logged in and can book a flight
+                                        navigate(`/booking/${flight._id}`);
+                                    } else {
+                                        // If the token doesn't exist, redirect the user to the login page
+                                        navigate("/signup");
+                                    }
+                                }}
+                                style={{ marginTop: "1em" }}
+                            >
+                                Book this flight
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </Grid>
             ))}
-        </div>
+        </Grid>
     );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     TextField,
     Select,
@@ -28,7 +28,10 @@ const TravellerSelection: React.FC<TravellerSelectionProps> = ({
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
     const [cabinClass, setCabinClass] = useState("economy");
-    // const [travellers, setTravellers] = useState('1');
+
+    useEffect(() => {
+        onSelectionChange(adults, children, cabinClass);
+    }, []); // Runs when first rendered
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);

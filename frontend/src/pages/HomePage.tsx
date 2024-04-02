@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SearchBar from "../components/SearchBar";
 import SearchResults from "../components/SearchResults";
 import MonthlyFlights from "../components/MonthlyFlights";
@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
         >
             <SearchBar setFlights={handleSearch} />
             {searchClicked && <SearchResults flights={flights} />}
-            <MonthlyFlights />
+            {/* <MonthlyFlights /> */}
         </Box>
     );
 };

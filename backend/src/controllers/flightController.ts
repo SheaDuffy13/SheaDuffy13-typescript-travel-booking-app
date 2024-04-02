@@ -119,7 +119,7 @@ export const deleteFlightById = async (req: Request, res: Response) => {
 // search flights
 export const searchFlights = async (req: Request, res: Response) => {
     try {
-        const { departure, destination, date, travellers, cabinClass } =
+        const { departure, destination, date, adults, children, cabinClass } =
             req.query;
 
         // Assert that departure and destination are strings
@@ -147,6 +147,11 @@ export const searchFlights = async (req: Request, res: Response) => {
         // Convert date string to Date object
         const dateObj = new Date(date as string);
 
+        // Calculate total travellers
+        const totalTravellers = typeof adults === 'string' && typeof children === 'string' 
+            ? parseInt(adults) + parseInt(children)
+            : 0;
+
         // Find flights that match the search criteria
         const flights = await Flight.find({
             departure: departureId,
@@ -155,10 +160,12 @@ export const searchFlights = async (req: Request, res: Response) => {
                 $gte: dateObj,
                 $lt: new Date(dateObj.getTime() + 24 * 60 * 60 * 1000), // Add 24 hours to the date
             },
-            [`availableSeats.${cabinClass}`]: { $gte: travellers },
-        }).select(
-            "flightNumber departure destination date seats price availableSeats duration status"
-        ); // Select the fields to return
+            [`availableSeats.${cabinClass}`]: { $gte: totalTravellers },
+        })
+            .populate("departure destination") // Populate departure and destination fields
+            .select(
+                "flightNumber departure destination date seats price availableSeats duration status"
+            ); // Select the fields to return
 
         res.send(flights);
     } catch (error) {
@@ -168,7 +175,8 @@ export const searchFlights = async (req: Request, res: Response) => {
     }
 };
 
-// Get all flights departing from a location within the next month
+
+// Search flights for month by location
 export const getMonthlyFlights = async (req: Request, res: Response) => {
     try {
         const { location } = req.query;

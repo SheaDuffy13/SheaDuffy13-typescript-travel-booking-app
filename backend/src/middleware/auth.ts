@@ -21,9 +21,15 @@ export const authMiddleware = (
     jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
         if (err) {
             console.error("Error verifying token:", err); // Log any errors
-            return res
-                .status(403)
-                .json({ message: "Invalid or expired token" });
+            if (err instanceof jwt.TokenExpiredError) {
+                return res
+                    .status(401)
+                    .json({ message: "Token expired" });
+            } else {
+                return res
+                    .status(403)
+                    .json({ message: "Invalid token" });
+            }
         }
         req.userId = (decoded as JwtPayload).userId; // Save user ID for use in other routes
         next();
@@ -46,9 +52,15 @@ export const adminMiddleware = (
     jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
         if (err) {
             console.error("Error verifying token:", err); // Log any errors
-            return res
-                .status(403)
-                .json({ message: "Invalid or expired token" });
+            if (err instanceof jwt.TokenExpiredError) {
+                return res
+                    .status(401)
+                    .json({ message: "Token expired" });
+            } else {
+                return res
+                    .status(403)
+                    .json({ message: "Invalid token" });
+            }
         }
         if ((decoded as any).role !== "admin") {
             // Check if the user is an admin
@@ -58,3 +70,4 @@ export const adminMiddleware = (
         next();
     });
 };
+

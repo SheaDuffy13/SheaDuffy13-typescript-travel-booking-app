@@ -41,6 +41,10 @@ interface User {
     email: string;
 }
 
+interface DecodedUser extends User {
+    exp: number;
+}
+
 const BookingPage: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams();
@@ -59,9 +63,23 @@ const BookingPage: React.FC = () => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         let userId = "";
+    
         if (token) {
-            const decoded = jwtDecode<User>(token);
+            const decoded = jwtDecode<DecodedUser>(token);
+    
+            // Check if the token has expired
+            if (decoded.exp * 1000 < Date.now()) {
+                // If the token has expired, remove it from local storage and redirect the user to the login page
+                localStorage.removeItem("token");
+                navigate("/signup");
+                return;
+            }
+    
             userId = decoded.userId;
+        } else {
+            // If the token doesn't exist, redirect the user to the login page
+            navigate("/signup");
+            return;
         }
 
         const fetchData = async () => {
